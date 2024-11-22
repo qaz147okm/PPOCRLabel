@@ -233,13 +233,23 @@ def convert_token(html_list):
                 token_list.extend(["<td>", "</td>"])
             else:
                 token_list.append("<td")
-                if "colspan" in col:
-                    _, n = col.split("colspan=")
-                    token_list.append(' colspan="{}"'.format(int(n)))
-                if "rowspan" in col:
-                    _, n = col.split("rowspan=")
-                    token_list.append(' rowspan="{}"'.format(int(n)))
-                token_list.extend([">", "</td>"])
+                # 用与处理同时跨行跨列的单元格
+                if "colspan" in col and "rowspan" in col:
+                    if "colspan" in col:
+                        _, n = col.split("colspan=")
+                        token_list.append(' colspan="{}"'.format(int(n[0])))
+                    if "rowspan" in col:
+                        _, n = col.split("rowspan=")
+                        token_list.append(' rowspan="{}"'.format(int(n[0])))
+                    token_list.extend([">", "</td>"])
+                else:
+                    if "colspan" in col:
+                        _, n = col.split("colspan=")
+                        token_list.append(' colspan="{}"'.format(int(n)))
+                    if "rowspan" in col:
+                        _, n = col.split("rowspan=")
+                        token_list.append(' rowspan="{}"'.format(int(n)))
+                    token_list.extend([">", "</td>"])
         token_list.append("</tr>")
     token_list.append("</tbody>")
 
